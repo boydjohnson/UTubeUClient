@@ -1,8 +1,10 @@
 package com.example.boydjohnson.androidutubeuclient.fragments;
 
+import android.support.v4.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.boydjohnson.androidutubeuclient.R;
+import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
+import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
+import com.squareup.otto.Subscribe;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -34,6 +39,8 @@ import java.util.ArrayList;
 public class ChatroomListFragment extends Fragment {
 
     public static final String USER_TOKEN_KEY = "com.example.boydjohnson.androidutubeuclient.fragments.chatroomlistfragment.user_token_key";
+
+    private FragmentManager mFragmentManager;
 
     private String mUserToken;
 
@@ -58,6 +65,8 @@ public class ChatroomListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         mUserToken = bundle.getString(USER_TOKEN_KEY);
+        MessageBus.getInstance().register(this);
+        mFragmentManager = getFragmentManager();
     }
 
     @Override
@@ -193,7 +202,10 @@ public class ChatroomListFragment extends Fragment {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Button button1 = (Button) v;
+                    ChatFragment chatFragment = new ChatFragment();
+                    mListener.openChatroom(chatroom);
+                    FragmentTransaction ft = mFragmentManager.beginTransaction();
+                    ft.replace(R.id.container_for_fragments, chatFragment).commit();
 
 
                 }
@@ -222,6 +234,7 @@ public class ChatroomListFragment extends Fragment {
             return null;
         }
     }
+
 
 
 }

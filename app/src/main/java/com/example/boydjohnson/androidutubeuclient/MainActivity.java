@@ -10,8 +10,10 @@ import android.view.View;
 
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
+import com.example.boydjohnson.androidutubeuclient.data.Start;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageOut;
+import com.example.boydjohnson.androidutubeuclient.data.VoteIn;
 import com.example.boydjohnson.androidutubeuclient.data.WSTextMessage;
 import com.example.boydjohnson.androidutubeuclient.fragments.ChatroomListFragment;
 import com.google.android.gms.auth.api.Auth;
@@ -217,7 +219,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mMessageBus.post(textMessage);
                 }
                 if(baseMessage.getPercentage()!=null){
-
+                    VoteIn voteIn = new VoteIn(baseMessage.getYoutube_value(), baseMessage.getPercentage());
+                    mMessageBus.post(voteIn);
+                }
+                if(baseMessage.getStart()!=null){
+                    Start start = new Start(baseMessage.getYoutube_value());
+                    mMessageBus.post(start);
                 }
             }
         }
