@@ -9,9 +9,6 @@ import java.util.ArrayList;
  */
 public class WSTextMessage {
 
-    @JsonProperty("chatroom_id")
-    private Integer chatroom_id;
-
     @JsonProperty("username")
     private String username;
 
@@ -30,12 +27,15 @@ public class WSTextMessage {
     @JsonProperty("start")
     private Boolean start;
 
-    public Integer getChatroom_id() {
-        return chatroom_id;
-    }
+    @JsonProperty("percentage")
+    private Float percentage;
 
     public String getUsername() {
         return username;
+    }
+
+    public Float getPercentage() {
+        return percentage;
     }
 
     public String getMessage() {

@@ -1,20 +1,18 @@
 package com.example.boydjohnson.androidutubeuclient;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
-import com.example.boydjohnson.androidutubeuclient.fragments.ChatFragment;
+import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
+import com.example.boydjohnson.androidutubeuclient.data.TextMessageOut;
+import com.example.boydjohnson.androidutubeuclient.data.WSTextMessage;
 import com.example.boydjohnson.androidutubeuclient.fragments.ChatroomListFragment;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -25,6 +23,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.squareup.otto.Bus;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -196,10 +196,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class UTubeUWSHandler extends WebSocketConnectionHandler{
 
         @Override
-        public void onTextMessage(String payload){
-            Log.i("WS_MESSAGE", payload);
-        }
+        public void onTextMessage(String payload) {
+            ObjectMapper mapper = new ObjectMapper();
+            WSTextMessage baseMessage = null;
+            try {
+                 baseMessage = mapper.readValue(payload, WSTextMessage.class);
+            }catch(Exception e){
+                Log.i("WSHandler", e.toString());
+            }
+            if(baseMessage!=null){
+                if(baseMessage.getUsernamesInChatroom()!=null){
+                    mMessageBus.post(baseMessage.getUsernamesInChatroom());
+                }
 
+                if(baseMessage.getLastTenMessages()!=null){
+                    mMessageBus.post(baseMessage.getLastTenMessages());
+                }
+                if(baseMessage.getMessage()!=null){
+                    TextMessageIn textMessage = new TextMessageIn(baseMessage.getUsername(), baseMessage.getMessage());
+                    mMessageBus.post(textMessage);
+                }
+                if(baseMessage.getPercentage()!=null){
+
+                }
+            }
+        }
     }
 
 }

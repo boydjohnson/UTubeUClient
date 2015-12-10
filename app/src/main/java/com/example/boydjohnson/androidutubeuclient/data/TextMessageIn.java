@@ -1,22 +1,17 @@
 package com.example.boydjohnson.androidutubeuclient.data;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
- * Created by boydjohnson on 12/1/15.
+ * Created by boydjohnson on 12/10/15.
  */
-public class TextMessage {
-    private Integer chatroomID;
+public class TextMessageIn {
     private String username;
     private String message;
 
-
-    public TextMessage(Integer chatroomID, String username, String message) {
-        this.chatroomID = chatroomID;
+    public TextMessageIn(String username, String message) {
         this.username = username;
         this.message = message;
-    }
-
-    public Integer getChatroomID() {
-        return chatroomID;
     }
 
     public String getUsername() {
@@ -26,5 +21,4 @@ public class TextMessage {
     public String getMessage() {
         return message;
     }
-
 }
