@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
 import com.example.boydjohnson.androidutubeuclient.fragments.ChatFragment;
 import com.example.boydjohnson.androidutubeuclient.fragments.ChatroomListFragment;
@@ -23,6 +24,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.squareup.otto.Bus;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,11 +48,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentManager mFragmentManager;
 
     String mUsername;
-    Integer mChatroom_id=13;
+
+    private static Bus mMessageBus;
 
     final Integer RESULT_CODE_SIGN_IN = 9001;
 
-    private String mAPIToken;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
+
+        mMessageBus = MessageBus.getInstance();
+        mMessageBus.register(this);
+
 
         }
 
@@ -106,7 +113,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         setContentView(R.layout.fragment_container);
-        Fragment fragment = new ChatroomListFragment();
+        ChatroomListFragment fragment = new ChatroomListFragment();
+        fragment.setmListener(this);
         Bundle b = new Bundle();
         b.putString(ChatroomListFragment.USER_TOKEN_KEY, result.getSignInAccount().getServerAuthCode());
         fragment.setArguments(b);

@@ -66,7 +66,7 @@ public class ChatroomListFragment extends Fragment {
 
         new GetAPIToken().execute("http://utubeu.herokuapp.com/api/convert-token/google-oauth2", "GET", mUserToken);
         new GetChatrooms().execute("ownedchatrooms", mAPItoken);
-
+        //Makeownedbuttons method is called in onpostexecute of GetChatrooms
         mOwnedChatroomDock = (LinearLayout) view.findViewById(R.id.chatrooms_dock);
 
 
