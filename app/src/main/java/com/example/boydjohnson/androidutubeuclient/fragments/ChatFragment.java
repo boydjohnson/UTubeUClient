@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.boydjohnson.androidutubeuclient.R;
@@ -32,6 +33,7 @@ public class ChatFragment extends Fragment {
     private ArrayList<String> mMessagesSaved;
 
     private LinearLayout mChatterTextDock;
+    private ScrollView mScroller;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -43,7 +45,7 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_chat, parent, false);
-
+        mScroller = (ScrollView)view.findViewById(R.id.scroller);
         mChatterTextDock = (LinearLayout)view.findViewById(R.id.chatter_text_dock);
         for(String message: mMessagesSaved){
             TextView textView = new TextView(getActivity());
@@ -56,7 +58,17 @@ public class ChatFragment extends Fragment {
 
     @Subscribe
     public void getTextMessage(TextMessageIn messageIn){
-        Log.i("Chatroom::::", messageIn.getMessage() + messageIn.getUsername());
+        TextView textView = new TextView(getActivity());
+        String text;
+        if(messageIn.getUsername()==null){
+            text = "You : "+messageIn.getMessage();
+        }else {
+            text = messageIn.getUsername() + " : " + messageIn.getMessage();
+        }
+        mMessagesSaved.add(text);
+        textView.setText(text);
+        mChatterTextDock.addView(textView);
+        mScroller.fullScroll(View.FOCUS_DOWN);
     }
 
     @Subscribe
@@ -73,6 +85,7 @@ public class ChatFragment extends Fragment {
             }catch (Exception e){
                 Log.e("LASTTEN", e.toString());
             }
+            mScroller.fullScroll(View.FOCUS_DOWN);
 
         }
 
