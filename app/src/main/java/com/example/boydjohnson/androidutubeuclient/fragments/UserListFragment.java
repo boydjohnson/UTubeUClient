@@ -3,6 +3,7 @@ package com.example.boydjohnson.androidutubeuclient.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +28,10 @@ public class UserListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         mUserList = new ArrayList<>();
         MessageBus.getInstance().register(this);
-
+        Log.i("MUSERLIST:::", Integer.toString(mUserList.size()));
         UserListAdapter adapter = new UserListAdapter(getActivity(), R.layout.fragment_container, mUserList);
         this.setListAdapter(adapter);
+
     }
 
 
