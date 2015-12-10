@@ -43,9 +43,14 @@ public class ChatroomListFragment extends Fragment {
 
     private LinearLayout mOwnedChatroomDock;
 
+    private OpenChatroomAndWSListener mListener;
 
-    public interface APIauthTokenListener {
-        void getToken(String token);
+    public interface OpenChatroomAndWSListener {
+        void openChatroom(Chatroom chatroom);
+    }
+
+    public void setmListener(OpenChatroomAndWSListener listener){
+        this.mListener = listener;
     }
 
     @Override
@@ -63,6 +68,8 @@ public class ChatroomListFragment extends Fragment {
         new GetChatrooms().execute("ownedchatrooms", mAPItoken);
 
         mOwnedChatroomDock = (LinearLayout) view.findViewById(R.id.chatrooms_dock);
+
+
 
         return view;
     }
@@ -163,6 +170,8 @@ public class ChatroomListFragment extends Fragment {
             try {
                 mOwnedChatrooms = mapper.readValue(response, mapper.getTypeFactory()
                         .constructCollectionType(ArrayList.class, Chatroom.class));
+                Log.i("OWNEDCHATROOMS:", Integer.toString(mOwnedChatrooms.size()));
+                makeOwnedButtons();
 
             } catch (Exception e) {
                 Log.e("ParseChatrooms", e.toString());
@@ -177,10 +186,20 @@ public class ChatroomListFragment extends Fragment {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.addView(textView);
 
-        for (Chatroom chatroom : mOwnedChatrooms) {
+        for (final Chatroom chatroom : mOwnedChatrooms) {
+
+            Log.i("CHATROOMNAME:::", chatroom.getname());
             Button button = new Button(getActivity());
-            button.setText(chatroom.getname());
-            button.setTag(R.id.chatroom_id, chatroom.getid());
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Button button1 = (Button) v;
+
+
+                }
+            });
+
+
             linearLayout.addView(button);
         }
         mOwnedChatroomDock.addView(linearLayout);

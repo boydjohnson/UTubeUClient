@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
 import com.example.boydjohnson.androidutubeuclient.fragments.ChatFragment;
 import com.example.boydjohnson.androidutubeuclient.fragments.ChatroomListFragment;
 import com.google.android.gms.auth.api.Auth;
@@ -36,7 +37,7 @@ import de.tavendo.autobahn.WebSocketException;
 https://github.com/googlesamples/google-services/blob/master/android/signin/app/src/main/java/com/google/samples/quickstart/signin/SignInActivity.java
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, ChatroomListFragment.APIauthTokenListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, ChatroomListFragment.OpenChatroomAndWSListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void handleSignInResult(GoogleSignInResult result){
-//        mUsername = result.getSignInAccount().getEmail().split("@")[0];
+        mUsername = result.getSignInAccount().getEmail().split("@")[0];
 
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         setContentView(R.layout.fragment_container);
@@ -179,12 +180,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void getToken(String token){
-        mAPIToken = token;
+    public void openChatroom(Chatroom chatroom){
+        startWS(chatroom.getid(), mUsername);
+
     }
 
-
-    class UTubeUWSHandler extends WebSocketConnectionHandler{
+    private class UTubeUWSHandler extends WebSocketConnectionHandler{
 
         @Override
         public void onTextMessage(String payload){
