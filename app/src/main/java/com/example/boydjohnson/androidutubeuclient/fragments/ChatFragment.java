@@ -9,8 +9,16 @@ import android.view.ViewGroup;
 
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
+import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
+import com.example.boydjohnson.androidutubeuclient.data.LastTen;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
+import com.example.boydjohnson.androidutubeuclient.data.lastTenMessage;
+
 import com.squareup.otto.Subscribe;
+
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.util.ArrayList;
 
 
 /**
@@ -35,5 +43,20 @@ public class ChatFragment extends Fragment{
     @Subscribe
     public void getTextMessage(TextMessageIn messageIn){
         Log.i("Chatroom::::", messageIn.getMessage() + messageIn.getUsername());
+    }
+
+    @Subscribe
+    public void getLastTenMessages(LastTen lastTenMessages){
+        ObjectMapper mapper = new ObjectMapper();
+        for(String json: lastTenMessages.getLastTenMessages()) {
+            try {
+                lastTenMessage message = mapper.readValue(json, lastTenMessage.class);
+                Log.i("LASTTEN:::", message.getMessage()+message.getUsername());
+            }catch (Exception e){
+                Log.e("LASTTEN", e.toString());
+            }
+
+        }
+
     }
 }

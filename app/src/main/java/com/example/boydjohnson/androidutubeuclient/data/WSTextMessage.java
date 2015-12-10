@@ -19,7 +19,7 @@ public class WSTextMessage {
     private String youtube_value;
 
     @JsonProperty("last_ten")
-    private ArrayList<lastTenMessage> lastTenMessages;
+    private ArrayList<String> lastTenMessages;
 
     @JsonProperty("usernames")
     private ArrayList<String> usernamesInChatroom;
@@ -46,7 +46,7 @@ public class WSTextMessage {
         return youtube_value;
     }
 
-    public ArrayList<lastTenMessage> getLastTenMessages() {
+    public ArrayList<String> getLastTenMessages() {
         return lastTenMessages;
     }
 

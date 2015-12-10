@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
+import com.example.boydjohnson.androidutubeuclient.data.LastTen;
 import com.example.boydjohnson.androidutubeuclient.data.Start;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageOut;
@@ -212,7 +213,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 if(baseMessage.getLastTenMessages()!=null){
-                    mMessageBus.post(baseMessage.getLastTenMessages());
+                    LastTen lastTen = new LastTen(baseMessage.getLastTenMessages());
+                    mMessageBus.post(lastTen);
+
                 }
                 if(baseMessage.getMessage()!=null){
                     TextMessageIn textMessage = new TextMessageIn(baseMessage.getUsername(), baseMessage.getMessage());
