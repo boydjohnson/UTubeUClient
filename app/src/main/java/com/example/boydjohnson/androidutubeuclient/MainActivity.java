@@ -3,17 +3,19 @@ package com.example.boydjohnson.androidutubeuclient;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.boydjohnson.androidutubeuclient.adapters.ChatroomViewAdapter;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
 import com.example.boydjohnson.androidutubeuclient.data.LastTen;
 import com.example.boydjohnson.androidutubeuclient.data.Start;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
-import com.example.boydjohnson.androidutubeuclient.data.TextMessageOut;
+import com.example.boydjohnson.androidutubeuclient.data.UsernamesInChatroom;
 import com.example.boydjohnson.androidutubeuclient.data.VoteIn;
 import com.example.boydjohnson.androidutubeuclient.data.WSTextMessage;
 import com.example.boydjohnson.androidutubeuclient.fragments.ChatroomListFragment;
@@ -193,6 +195,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void openChatroom(Chatroom chatroom){
         startWS(chatroom.getid(), mUsername);
+        setContentView(R.layout.viewpager_container);
+        ViewPager pager = (ViewPager)findViewById(R.id.pager);
+        ChatroomViewAdapter adapter = new ChatroomViewAdapter(mFragmentManager);
+        pager.setAdapter(adapter);
 
     }
 
@@ -209,7 +215,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             if(baseMessage!=null){
                 if(baseMessage.getUsernamesInChatroom()!=null){
-                    mMessageBus.post(baseMessage.getUsernamesInChatroom());
+                    UsernamesInChatroom usernames = new UsernamesInChatroom(baseMessage.getUsernamesInChatroom());
+                    mMessageBus.post(usernames);
                 }
 
                 if(baseMessage.getLastTenMessages()!=null){

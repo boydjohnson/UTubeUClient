@@ -40,8 +40,6 @@ public class ChatroomListFragment extends Fragment {
 
     public static final String USER_TOKEN_KEY = "com.example.boydjohnson.androidutubeuclient.fragments.chatroomlistfragment.user_token_key";
 
-    private FragmentManager mFragmentManager;
-
     private String mUserToken;
 
     private String mAPItoken;
@@ -66,7 +64,6 @@ public class ChatroomListFragment extends Fragment {
         Bundle bundle = getArguments();
         mUserToken = bundle.getString(USER_TOKEN_KEY);
         MessageBus.getInstance().register(this);
-        mFragmentManager = getFragmentManager();
     }
 
     @Override
@@ -204,8 +201,7 @@ public class ChatroomListFragment extends Fragment {
                 public void onClick(View v) {
                     ChatFragment chatFragment = new ChatFragment();
                     mListener.openChatroom(chatroom);
-                    FragmentTransaction ft = mFragmentManager.beginTransaction();
-                    ft.replace(R.id.container_for_fragments, chatFragment).commit();
+
 
 
                 }
