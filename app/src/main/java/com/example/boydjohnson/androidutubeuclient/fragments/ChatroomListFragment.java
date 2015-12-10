@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.boydjohnson.androidutubeuclient.R;
@@ -56,12 +57,12 @@ public class ChatroomListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chat, parent, false);
-        //This also calls async task that gets Chatrooms
+        View view = inflater.inflate(R.layout.fragment_chatroom_list, parent, false);
+
         new GetAPIToken().execute("http://utubeu.herokuapp.com/api/convert-token/google-oauth2", "GET", mUserToken);
         new GetChatrooms().execute("ownedchatrooms", mAPItoken);
 
-        mOwnedChatroomDock = (LinearLayout) view.findViewById(R.id.owned_chatrooms_dock);
+        mOwnedChatroomDock = (LinearLayout) view.findViewById(R.id.chatrooms_dock);
 
         return view;
     }
@@ -170,12 +171,19 @@ public class ChatroomListFragment extends Fragment {
     }
 
     private void makeOwnedButtons() {
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        TextView textView = new TextView(getActivity());
+        textView.setText("Owned Chatrooms");
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(textView);
+
         for (Chatroom chatroom : mOwnedChatrooms) {
             Button button = new Button(getActivity());
             button.setText(chatroom.getname());
             button.setTag(R.id.chatroom_id, chatroom.getid());
-            mOwnedChatroomDock.addView(button);
+            linearLayout.addView(button);
         }
+        mOwnedChatroomDock.addView(linearLayout);
     }
 
 
