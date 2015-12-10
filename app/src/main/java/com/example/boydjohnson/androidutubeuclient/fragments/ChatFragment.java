@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.boydjohnson.androidutubeuclient.R;
+import com.example.boydjohnson.androidutubeuclient.adapters.ChatroomViewAdapter;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.LastTen;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
@@ -19,11 +20,16 @@ import com.squareup.otto.Subscribe;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by boydjohnson on 12/1/15.
  */
-public class ChatFragment extends Fragment{
+public class ChatFragment extends Fragment {
+
+    private ArrayList<String> mMessagesSaved;
 
     private LinearLayout mChatterTextDock;
 
@@ -31,6 +37,7 @@ public class ChatFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         MessageBus.getInstance().register(this);
+        mMessagesSaved = new ArrayList<>();
     }
 
     @Override
@@ -38,6 +45,11 @@ public class ChatFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_chat, parent, false);
 
         mChatterTextDock = (LinearLayout)view.findViewById(R.id.chatter_text_dock);
+        for(String message: mMessagesSaved){
+            TextView textView = new TextView(getActivity());
+            textView.setText(message);
+            mChatterTextDock.addView(textView);
+        }
 
         return view;
     }
@@ -54,7 +66,9 @@ public class ChatFragment extends Fragment{
             try {
                 LastTenMessage message = mapper.readValue(json, LastTenMessage.class);
                 TextView textView = new TextView(getActivity());
-                textView.setText(message.getUsername()+" : "+message.getMessage());
+                String text = message.getUsername()+" : "+message.getMessage();
+                mMessagesSaved.add(text);
+                textView.setText(text);
                 mChatterTextDock.addView(textView);
             }catch (Exception e){
                 Log.e("LASTTEN", e.toString());
@@ -63,4 +77,5 @@ public class ChatFragment extends Fragment{
         }
 
     }
+
 }

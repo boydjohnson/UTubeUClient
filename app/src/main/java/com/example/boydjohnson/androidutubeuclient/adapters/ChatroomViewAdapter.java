@@ -41,4 +41,10 @@ public class ChatroomViewAdapter extends FragmentPagerAdapter {
     public int getCount(){
         return 4;
     }
+
+
+    public interface FragmentLifecycle{
+        void onPauseFragment();
+        void onResumeFragment();
+    }
 }
