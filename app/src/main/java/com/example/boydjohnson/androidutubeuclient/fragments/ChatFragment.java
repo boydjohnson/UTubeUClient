@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
@@ -23,6 +25,8 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class ChatFragment extends Fragment{
 
+    private LinearLayout mChatterTextDock;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -33,6 +37,7 @@ public class ChatFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_chat, parent, false);
 
+        mChatterTextDock = (LinearLayout)view.findViewById(R.id.chatter_text_dock);
 
         return view;
     }
@@ -48,7 +53,9 @@ public class ChatFragment extends Fragment{
         for(String json: lastTenMessages.getLastTenMessages()) {
             try {
                 LastTenMessage message = mapper.readValue(json, LastTenMessage.class);
-                Log.i("LASTTEN:::", message.getMessage()+message.getUsername());
+                TextView textView = new TextView(getActivity());
+                textView.setText(message.getUsername()+" : "+message.getMessage());
+                mChatterTextDock.addView(textView);
             }catch (Exception e){
                 Log.e("LASTTEN", e.toString());
             }

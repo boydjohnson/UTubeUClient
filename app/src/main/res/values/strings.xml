@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">AndroidUTubeUClient</string>
+    <string name="app_name">UTubeU</string>
 
     <string name="owned_chatroom_label">Owned Chatrooms:</string>
     <string name="member_chatroom_label">Member Chatrooms:</string>
     <string name="joinable_chatroom_label">Join these chatrooms:</string>
+
+    <string name="chat_text_label">Enter Chat Text:</string>
     
 </resources>
