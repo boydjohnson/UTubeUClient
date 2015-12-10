@@ -9,16 +9,13 @@ import android.view.ViewGroup;
 
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
-import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
 import com.example.boydjohnson.androidutubeuclient.data.LastTen;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
-import com.example.boydjohnson.androidutubeuclient.data.lastTenMessage;
+import com.example.boydjohnson.androidutubeuclient.data.LastTenMessage;
 
 import com.squareup.otto.Subscribe;
 
 import org.codehaus.jackson.map.ObjectMapper;
-
-import java.util.ArrayList;
 
 
 /**
@@ -50,7 +47,7 @@ public class ChatFragment extends Fragment{
         ObjectMapper mapper = new ObjectMapper();
         for(String json: lastTenMessages.getLastTenMessages()) {
             try {
-                lastTenMessage message = mapper.readValue(json, lastTenMessage.class);
+                LastTenMessage message = mapper.readValue(json, LastTenMessage.class);
                 Log.i("LASTTEN:::", message.getMessage()+message.getUsername());
             }catch (Exception e){
                 Log.e("LASTTEN", e.toString());
