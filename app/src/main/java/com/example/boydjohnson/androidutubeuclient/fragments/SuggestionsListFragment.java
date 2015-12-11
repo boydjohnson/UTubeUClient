@@ -16,6 +16,8 @@ import com.squareup.otto.Subscribe;
  */
 public class SuggestionsListFragment extends ListFragment {
 
+    public static final String CHATROOM_ID_TAG = "com.example.boydjohnson.androidutubeuclient.fragments.suggestionlistfragment.chatroom_id";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

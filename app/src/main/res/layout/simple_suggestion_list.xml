@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/suggestion_title"
         android:id="@+id/suggestion_description"/>
-    <CheckedTextView
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/vote_checker"

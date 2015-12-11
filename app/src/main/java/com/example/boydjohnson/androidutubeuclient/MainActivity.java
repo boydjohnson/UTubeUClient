@@ -18,6 +18,7 @@ import com.example.boydjohnson.androidutubeuclient.data.SuggestionList;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
 import com.example.boydjohnson.androidutubeuclient.data.UsernamesInChatroom;
 import com.example.boydjohnson.androidutubeuclient.data.VoteIn;
+import com.example.boydjohnson.androidutubeuclient.data.VoteOut;
 import com.example.boydjohnson.androidutubeuclient.data.WSTextMessage;
 import com.example.boydjohnson.androidutubeuclient.fragments.ChatroomListFragment;
 import com.google.android.gms.auth.api.Auth;
@@ -29,6 +30,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -198,10 +200,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startWS(chatroom.getid(), mUsername);
         setContentView(R.layout.viewpager_container);
         ViewPager pager = (ViewPager)findViewById(R.id.pager);
-        ChatroomViewAdapter adapter = new ChatroomViewAdapter(mFragmentManager);
+        ChatroomViewAdapter adapter = new ChatroomViewAdapter(mFragmentManager, chatroom.getid());
         pager.setAdapter(adapter);
 
     }
+
+    @Subscribe
+    public void getVoteFromSuggestionListFragment(VoteOut vote){
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+            mConnection.sendTextMessage(mapper.writeValueAsString(vote));
+        }catch(Exception e){
+            Log.e("VOTEOUTOUT::", e.toString());
+        }
+    }
+
 
     private class UTubeUWSHandler extends WebSocketConnectionHandler{
 
