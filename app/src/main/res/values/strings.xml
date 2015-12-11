@@ -6,5 +6,6 @@
     <string name="joinable_chatroom_label">Join these chatrooms:</string>
 
     <string name="chat_text_label">Enter Chat Text:</string>
+    <string name="vote_checkbox_text">Vote!</string>
     
 </resources>
