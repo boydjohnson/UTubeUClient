@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.adapters.ChatroomViewAdapter;
@@ -71,8 +72,13 @@ public class ChatFragment extends Fragment {
 
                 if(actionId == EditorInfo.IME_ACTION_DONE) {
                     EditText editText = (EditText) v;
-                    TextMessageOut textMessageOut = new TextMessageOut(mChatroomId, mUsername, editText.getText().toString());
-                    mMessageBus.post(textMessageOut);
+                    if(!editText.getText().toString().equals("")) {
+                        TextMessageOut textMessageOut = new TextMessageOut(mChatroomId, mUsername, editText.getText().toString());
+                        editText.setText("");
+                        mMessageBus.post(textMessageOut);
+                    }else{
+                        Toast.makeText(getActivity(), "No text entered!", Toast.LENGTH_SHORT).show();
+                    }
                     return true;
                 }
                 return false;
@@ -93,7 +99,12 @@ public class ChatFragment extends Fragment {
         }
         textView.setText(text);
         mChatterTextDock.addView(textView);
-        mScroller.fullScroll(View.FOCUS_DOWN);
+        mScroller.post(new Runnable() {
+            @Override
+            public void run() {
+                mScroller.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     @Subscribe
