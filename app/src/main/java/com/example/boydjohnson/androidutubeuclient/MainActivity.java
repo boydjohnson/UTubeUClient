@@ -14,6 +14,7 @@ import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
 import com.example.boydjohnson.androidutubeuclient.data.LastTen;
 import com.example.boydjohnson.androidutubeuclient.data.Start;
+import com.example.boydjohnson.androidutubeuclient.data.SuggestionList;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
 import com.example.boydjohnson.androidutubeuclient.data.UsernamesInChatroom;
 import com.example.boydjohnson.androidutubeuclient.data.VoteIn;
@@ -235,6 +236,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(baseMessage.getStart()!=null){
                     Start start = new Start(baseMessage.getYoutube_value());
                     mMessageBus.post(start);
+                }
+                if(baseMessage.getSuggestions_list()!=null){
+                    SuggestionList list = new SuggestionList(baseMessage.getSuggestions_list());
+                    mMessageBus.post(list);
                 }
             }
         }

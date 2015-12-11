@@ -30,6 +30,13 @@ public class WSTextMessage {
     @JsonProperty("percentage")
     private Float percentage;
 
+    @JsonProperty("suggestion_list")
+    private ArrayList<String> suggestions_list;
+
+    public ArrayList<String> getSuggestions_list() {
+        return suggestions_list;
+    }
+
     public String getUsername() {
         return username;
     }

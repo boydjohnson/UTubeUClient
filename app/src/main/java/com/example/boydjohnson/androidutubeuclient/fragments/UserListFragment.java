@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.adapters.UserListAdapter;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
+import com.example.boydjohnson.androidutubeuclient.data.UsernamesInChatroom;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -28,16 +29,17 @@ public class UserListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         mUserList = new ArrayList<>();
         MessageBus.getInstance().register(this);
-        Log.i("MUSERLIST:::", Integer.toString(mUserList.size()));
-        UserListAdapter adapter = new UserListAdapter(getActivity(), R.layout.fragment_container, mUserList);
-        this.setListAdapter(adapter);
+
 
     }
 
 
     @Subscribe
-    public void getUserList(ArrayList<String> userlist){
-        mUserList = userlist;
+    public void getUserList(UsernamesInChatroom userlist){
+        mUserList = userlist.getUsernames();
+        Log.i("USERLIST", Integer.toString(mUserList.size()));
+        UserListAdapter adapter = new UserListAdapter(getActivity(), R.layout.fragment_container, mUserList);
+        this.setListAdapter(adapter);
     }
 
 
