@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startWS(chatroom.getid(), mUsername);
         setContentView(R.layout.viewpager_container);
         ViewPager pager = (ViewPager)findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(4);
         ChatroomViewAdapter adapter = new ChatroomViewAdapter(mFragmentManager, chatroom.getid());
         pager.setAdapter(adapter);
 
