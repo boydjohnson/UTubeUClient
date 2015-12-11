@@ -16,32 +16,41 @@ import com.example.boydjohnson.androidutubeuclient.fragments.YoutubeSearchFragme
 public class ChatroomViewAdapter extends FragmentPagerAdapter {
 
     private Integer chatroom_id;
+    private String username;
 
-    public ChatroomViewAdapter(FragmentManager fm, Integer chatroom_id){
+    public ChatroomViewAdapter(FragmentManager fm, Integer chatroom_id, String username){
         super(fm);
         this.chatroom_id = chatroom_id;
+        this.username = username;
     }
 
     @Override
     public Fragment getItem(int pos){
 
+        Bundle b = new Bundle();
+        b.putInt(SuggestionsListFragment.CHATROOM_ID_TAG, chatroom_id);
+        b.putString(SuggestionsListFragment.USERNAME_TAG, username);
         int w = pos % 4;
         switch (w){
 
-            case 0: return new ChatFragment();
+            case 0:
+                ChatFragment chatFragment = new ChatFragment();
+                chatFragment.setArguments(b);
+                return chatFragment;
 
             case 1: return new UserListFragment();
 
             case 2:
                 SuggestionsListFragment suggestionFragment = new SuggestionsListFragment();
-                Bundle b = new Bundle();
-                b.putInt(SuggestionsListFragment.CHATROOM_ID_TAG, chatroom_id);
                 suggestionFragment.setArguments(b);
                 return suggestionFragment;
 
             case 3: return new YoutubeSearchFragment();
 
-            default: return new ChatFragment();
+            default:
+                ChatFragment cFragment = new ChatFragment();
+                cFragment.setArguments(b);
+                return cFragment;
         }
     }
 

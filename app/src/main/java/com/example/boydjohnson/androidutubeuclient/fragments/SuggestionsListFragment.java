@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class SuggestionsListFragment extends ListFragment {
 
     public static final String CHATROOM_ID_TAG = "com.example.boydjohnson.androidutubeuclient.fragments.suggestionlistfragment.chatroom_id";
+    public static final String USERNAME_TAG = "com.example.boydjohnson.username_tag";
 
     private ArrayList<Suggestion> mSuggestionList;
 

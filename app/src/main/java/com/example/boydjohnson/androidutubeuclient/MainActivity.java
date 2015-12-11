@@ -16,6 +16,7 @@ import com.example.boydjohnson.androidutubeuclient.data.LastTen;
 import com.example.boydjohnson.androidutubeuclient.data.Start;
 import com.example.boydjohnson.androidutubeuclient.data.SuggestionList;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
+import com.example.boydjohnson.androidutubeuclient.data.TextMessageOut;
 import com.example.boydjohnson.androidutubeuclient.data.UsernamesInChatroom;
 import com.example.boydjohnson.androidutubeuclient.data.VoteIn;
 import com.example.boydjohnson.androidutubeuclient.data.VoteOut;
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.viewpager_container);
         ViewPager pager = (ViewPager)findViewById(R.id.pager);
         pager.setOffscreenPageLimit(4);
-        ChatroomViewAdapter adapter = new ChatroomViewAdapter(mFragmentManager, chatroom.getid());
+        ChatroomViewAdapter adapter = new ChatroomViewAdapter(mFragmentManager, chatroom.getid(), mUsername);
         pager.setAdapter(adapter);
 
     }
@@ -213,6 +214,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mConnection.sendTextMessage(mapper.writeValueAsString(vote));
         }catch(Exception e){
             Log.e("VOTEOUTOUT::", e.toString());
+        }
+    }
+
+    @Subscribe
+    public void getTextMessageOut(TextMessageOut textMessageOut){
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+            mConnection.sendTextMessage(mapper.writeValueAsString(textMessageOut));
+        }catch (Exception e){
+            Log.e("MESSAGEOUT", e.toString());
         }
     }
 

@@ -3,9 +3,12 @@ package com.example.boydjohnson.androidutubeuclient.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -13,10 +16,13 @@ import android.widget.TextView;
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.adapters.ChatroomViewAdapter;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
+import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
 import com.example.boydjohnson.androidutubeuclient.data.LastTen;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
 import com.example.boydjohnson.androidutubeuclient.data.LastTenMessage;
 
+import com.example.boydjohnson.androidutubeuclient.data.TextMessageOut;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -30,16 +36,24 @@ import java.util.ArrayList;
  */
 public class ChatFragment extends Fragment {
 
-    private ArrayList<String> mMessagesSaved;
-
     private LinearLayout mChatterTextDock;
     private ScrollView mScroller;
+
+    private Bus mMessageBus;
+
+    private Integer mChatroomId;
+    private String mUsername;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        MessageBus.getInstance().register(this);
-        mMessagesSaved = new ArrayList<>();
+        mMessageBus = MessageBus.getInstance();
+        mMessageBus.register(this);
+        Bundle bundle = getArguments();
+        mChatroomId = bundle.getInt(SuggestionsListFragment.CHATROOM_ID_TAG);
+        mUsername = bundle.getString(SuggestionsListFragment.USERNAME_TAG);
+
     }
 
     @Override
@@ -47,11 +61,23 @@ public class ChatFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat, parent, false);
         mScroller = (ScrollView)view.findViewById(R.id.scroller);
         mChatterTextDock = (LinearLayout)view.findViewById(R.id.chatter_text_dock);
-        for(String message: mMessagesSaved){
-            TextView textView = new TextView(getActivity());
-            textView.setText(message);
-            mChatterTextDock.addView(textView);
-        }
+
+        EditText textInputBox = (EditText)view.findViewById(R.id.chatter_text_box);
+        textInputBox.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        textInputBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                Log.i("KEYPRESSED", Integer.toString(actionId));
+
+                if(actionId == EditorInfo.IME_ACTION_DONE) {
+                    EditText editText = (EditText) v;
+                    TextMessageOut textMessageOut = new TextMessageOut(mChatroomId, mUsername, editText.getText().toString());
+                    mMessageBus.post(textMessageOut);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         return view;
     }
@@ -65,7 +91,6 @@ public class ChatFragment extends Fragment {
         }else {
             text = messageIn.getUsername() + " : " + messageIn.getMessage();
         }
-        mMessagesSaved.add(text);
         textView.setText(text);
         mChatterTextDock.addView(textView);
         mScroller.fullScroll(View.FOCUS_DOWN);
@@ -73,21 +98,22 @@ public class ChatFragment extends Fragment {
 
     @Subscribe
     public void getLastTenMessages(LastTen lastTenMessages){
+        Log.i("LASTTEN::", "RECEIVED");
         ObjectMapper mapper = new ObjectMapper();
         for(String json: lastTenMessages.getLastTenMessages()) {
             try {
                 LastTenMessage message = mapper.readValue(json, LastTenMessage.class);
                 TextView textView = new TextView(getActivity());
                 String text = message.getUsername()+" : "+message.getMessage();
-                mMessagesSaved.add(text);
                 textView.setText(text);
                 mChatterTextDock.addView(textView);
             }catch (Exception e){
                 Log.e("LASTTEN", e.toString());
             }
-            mScroller.fullScroll(View.FOCUS_DOWN);
+
 
         }
+        mScroller.fullScroll(View.FOCUS_DOWN);
 
     }
 

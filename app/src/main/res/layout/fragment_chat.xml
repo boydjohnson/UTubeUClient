@@ -34,6 +34,8 @@
 
         <EditText
             android:id="@+id/chatter_text_box"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
