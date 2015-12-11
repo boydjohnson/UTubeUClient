@@ -2,6 +2,8 @@ package com.example.boydjohnson.androidutubeuclient.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -19,6 +22,7 @@ import com.example.boydjohnson.androidutubeuclient.adapters.ChatroomViewAdapter;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
 import com.example.boydjohnson.androidutubeuclient.data.LastTen;
+import com.example.boydjohnson.androidutubeuclient.data.Start;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
 import com.example.boydjohnson.androidutubeuclient.data.LastTenMessage;
 
@@ -40,6 +44,8 @@ public class ChatFragment extends Fragment {
     private LinearLayout mChatterTextDock;
     private ScrollView mScroller;
 
+    private FragmentManager mFragmentManager;
+
     private Bus mMessageBus;
 
     private Integer mChatroomId;
@@ -54,7 +60,7 @@ public class ChatFragment extends Fragment {
         Bundle bundle = getArguments();
         mChatroomId = bundle.getInt(SuggestionsListFragment.CHATROOM_ID_TAG);
         mUsername = bundle.getString(SuggestionsListFragment.USERNAME_TAG);
-
+        mFragmentManager = getFragmentManager();
     }
 
     @Override
@@ -62,6 +68,7 @@ public class ChatFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat, parent, false);
         mScroller = (ScrollView)view.findViewById(R.id.scroller);
         mChatterTextDock = (LinearLayout)view.findViewById(R.id.chatter_text_dock);
+
 
         EditText textInputBox = (EditText)view.findViewById(R.id.chatter_text_box);
         textInputBox.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -105,6 +112,13 @@ public class ChatFragment extends Fragment {
                 mScroller.fullScroll(View.FOCUS_DOWN);
             }
         });
+    }
+
+    @Subscribe
+    public void getStartTheVideo(Start start){
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.add(R.id.container_for_fragments,);
+
     }
 
     @Subscribe
