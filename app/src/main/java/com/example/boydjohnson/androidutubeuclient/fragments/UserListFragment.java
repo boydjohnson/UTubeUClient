@@ -24,6 +24,8 @@ public class UserListFragment extends ListFragment {
 
     private ArrayList<String> mUserList;
 
+    private UserListAdapter mAdapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +40,17 @@ public class UserListFragment extends ListFragment {
     public void getUserList(UsernamesInChatroom userlist){
         mUserList = userlist.getUsernames();
         Log.i("USERLIST", Integer.toString(mUserList.size()));
-        UserListAdapter adapter = new UserListAdapter(getActivity(), R.layout.fragment_container, mUserList);
-        this.setListAdapter(adapter);
+        if(getListAdapter()!=null){
+            mAdapter.clear();
+            mAdapter.addAll(mUserList);
+            mAdapter.notifyDataSetChanged();
+            Log.i("USERLIST", "NotifyDataSetChanged");
+
+        }else {
+            mAdapter = new UserListAdapter(getActivity(), R.layout.fragment_container, mUserList);
+            this.setListAdapter(mAdapter);
+            Log.i("USERLIST", "setlistadapter");
+        }
     }
 
 
