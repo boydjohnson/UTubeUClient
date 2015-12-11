@@ -3,15 +3,11 @@ package com.example.boydjohnson.androidutubeuclient.fragments;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.adapters.SuggestionListAdapter;
-import com.example.boydjohnson.androidutubeuclient.adapters.UserListAdapter;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
-import com.example.boydjohnson.androidutubeuclient.data.Suggestion;
+import com.example.boydjohnson.androidutubeuclient.data.SuggestionIn;
 import com.example.boydjohnson.androidutubeuclient.data.SuggestionList;
 import com.squareup.otto.Subscribe;
 
@@ -27,7 +23,7 @@ public class SuggestionsListFragment extends ListFragment {
     public static final String CHATROOM_ID_TAG = "com.example.boydjohnson.androidutubeuclient.fragments.suggestionlistfragment.chatroom_id";
     public static final String USERNAME_TAG = "com.example.boydjohnson.username_tag";
 
-    private ArrayList<Suggestion> mSuggestionList;
+    private ArrayList<SuggestionIn> mSuggestionInList;
 
     private SuggestionListAdapter mAdapter;
 
@@ -37,7 +33,7 @@ public class SuggestionsListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MessageBus.getInstance().register(this);
-        mSuggestionList = new ArrayList<>();
+        mSuggestionInList = new ArrayList<>();
         mChatroomId = getArguments().getInt(CHATROOM_ID_TAG);
     }
 
@@ -47,25 +43,29 @@ public class SuggestionsListFragment extends ListFragment {
         ObjectMapper mapper = new ObjectMapper();
         for(String suggestionJson: suggestions_to_be_parsed){
             try {
-                Suggestion suggestion = mapper.readValue(suggestionJson, Suggestion.class);
-                mSuggestionList.add(suggestion);
+                SuggestionIn suggestionIn = mapper.readValue(suggestionJson, SuggestionIn.class);
+                mSuggestionInList.add(suggestionIn);
             }catch (Exception e){
                 Log.e("PARSING", "Parsing suggestions", e);
             }
         }
         if(getListAdapter()!=null){
             mAdapter.clear();
-            mAdapter.addAll(mSuggestionList);
+            mAdapter.addAll(mSuggestionInList);
             mAdapter.notifyDataSetChanged();
             Log.i("SUGGLIST", "NotifyDataSetChanged");
 
         }else {
-            mAdapter = new SuggestionListAdapter(getActivity(), R.layout.fragment_container, mSuggestionList, mChatroomId);
+            mAdapter = new SuggestionListAdapter(getActivity(), R.layout.fragment_container, mSuggestionInList, mChatroomId);
             this.setListAdapter(mAdapter);
             Log.i("SUGGLIST", "setlistadapter");
         }
     }
 
-
+    @Subscribe
+    public void getSuggestionIn(SuggestionIn suggestionIn){
+        mAdapter.add(suggestionIn);
+        mAdapter.notifyDataSetChanged();
+    }
 
 }
