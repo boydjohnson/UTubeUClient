@@ -19,16 +19,28 @@ public class SuggestionIn {
     @JsonProperty("image_url")
     private String image_url;
 
+    @JsonProperty("percentage")
+    private Float percentage;
 
-    public SuggestionIn(String youtube_value, String title, String description, String image_url) {
+
+    public SuggestionIn(String youtube_value, String title, String description, String image_url, Float percentage) {
         this.youtube_value = youtube_value;
         this.title = title;
         this.description = description;
         this.image_url = image_url;
+        this.percentage = percentage;
     }
 
     public SuggestionIn(){
 
+    }
+
+    public void setPercentage(Float percentage) {
+        this.percentage = percentage;
+    }
+
+    public Float getPercentage() {
+        return percentage;
     }
 
     public String getImage_url() {

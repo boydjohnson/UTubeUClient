@@ -3,6 +3,9 @@ package com.example.boydjohnson.androidutubeuclient.fragments;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.adapters.SuggestionListAdapter;
@@ -10,6 +13,7 @@ import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Start;
 import com.example.boydjohnson.androidutubeuclient.data.SuggestionIn;
 import com.example.boydjohnson.androidutubeuclient.data.SuggestionList;
+import com.example.boydjohnson.androidutubeuclient.data.VoteIn;
 import com.squareup.otto.Subscribe;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -37,6 +41,7 @@ public class SuggestionsListFragment extends ListFragment {
         mSuggestionInList = new ArrayList<>();
         mChatroomId = getArguments().getInt(CHATROOM_ID_TAG);
     }
+
 
     @Subscribe
     public void getSuggestionList(SuggestionList suggestionList){
@@ -86,6 +91,21 @@ public class SuggestionsListFragment extends ListFragment {
         }
         SuggestionIn suggestionToRemove = mAdapter.getItem(position);
         mAdapter.remove(suggestionToRemove);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void getVoteIn(VoteIn vote){
+        ArrayList<SuggestionIn> results = new ArrayList<>();
+        for(int i=0; i<mAdapter.getCount(); i++){
+            SuggestionIn suggestionIn = mAdapter.getItem(i);
+            if(suggestionIn.getYoutube_value().equals(vote.getYoutube_value())){
+                suggestionIn.setPercentage(vote.getPercentage());
+            }
+            results.add(suggestionIn);
+        }
+        mAdapter.clear();
+        mAdapter.addAll(results);
         mAdapter.notifyDataSetChanged();
     }
 

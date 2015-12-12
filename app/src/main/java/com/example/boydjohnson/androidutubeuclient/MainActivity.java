@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(baseMessage.getYoutube_value()!=null&&baseMessage.getPercentage()==null
                         &&baseMessage.getStart()==null){
                     SuggestionIn suggestionIn = new SuggestionIn(baseMessage.getYoutube_value(),
-                            baseMessage.getTitle(), baseMessage.getDescription(), baseMessage.getImage_url());
+                            baseMessage.getTitle(), baseMessage.getDescription(), baseMessage.getImage_url(), null);
                     mMessageBus.post(suggestionIn);
                 }
             }

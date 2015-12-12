@@ -54,7 +54,12 @@ public class SuggestionListAdapter extends ArrayAdapter<SuggestionIn> {
         TextView descTV = (TextView)convertView.findViewById(R.id.suggestion_description);
         descTV.setText(suggestionIn.getDescription());
 
-
+        TextView votingPercentageTV = (TextView)convertView.findViewById(R.id.vote_percentage);
+        if(suggestionIn.getPercentage()==null) {
+            votingPercentageTV.setText("0.00");
+        }else{
+            votingPercentageTV.setText(Float.toString(suggestionIn.getPercentage()));
+        }
         ImageView imageView = (ImageView)convertView.findViewById(R.id.suggestion_image);
         Picasso.with(mContext).load(suggestionIn.getImage_url()).into(imageView);
 
