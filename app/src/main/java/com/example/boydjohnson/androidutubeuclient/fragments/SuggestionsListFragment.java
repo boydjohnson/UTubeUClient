@@ -55,17 +55,11 @@ public class SuggestionsListFragment extends ListFragment {
                 Log.e("PARSING", "Parsing suggestions", e);
             }
         }
-        if(getListAdapter()!=null){
-            mAdapter.clear();
-            mAdapter.addAll(mSuggestionInList);
-            mAdapter.notifyDataSetChanged();
-            Log.i("SUGGLIST", "NotifyDataSetChanged");
 
-        }else {
             mAdapter = new SuggestionListAdapter(getActivity(), R.layout.fragment_container, mSuggestionInList, mChatroomId);
             this.setListAdapter(mAdapter);
-            Log.i("SUGGLIST", "setlistadapter");
-        }
+
+
     }
 
     @Subscribe
@@ -93,7 +87,7 @@ public class SuggestionsListFragment extends ListFragment {
         mAdapter.remove(suggestionToRemove);
         mAdapter.notifyDataSetChanged();
     }
-
+    //This method's code seems suspect as well, but I couldn't implement another way
     @Subscribe
     public void getVoteIn(VoteIn vote){
         ArrayList<SuggestionIn> results = new ArrayList<>();

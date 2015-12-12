@@ -55,6 +55,8 @@ public class SuggestionListAdapter extends ArrayAdapter<SuggestionIn> {
         descTV.setText(suggestionIn.getDescription());
 
         TextView votingPercentageTV = (TextView)convertView.findViewById(R.id.vote_percentage);
+
+        //This piece of code is forward-thinking. Right now getPercentage is always null on a suggestion.
         if(suggestionIn.getPercentage()==null) {
             votingPercentageTV.setText("0.00");
         }else{
