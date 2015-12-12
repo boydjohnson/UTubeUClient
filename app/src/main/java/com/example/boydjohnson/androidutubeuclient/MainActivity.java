@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FragmentManager mFragmentManager;
 
-    String mUsername;
+    private String mUsername;
+    private String mAPIToken;
 
     private static Bus mMessageBus;
 
@@ -75,20 +76,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mFragmentManager = getSupportFragmentManager();
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestServerAuthCode(get_google_client_id())
-                .requestEmail().build();
+        if(mUsername!=null && mAPIToken!=null){
+            getChatrooms();
+        }else {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestServerAuthCode(get_google_client_id())
+                    .requestEmail().build();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+            mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
+            findViewById(R.id.sign_in_button).setOnClickListener(this);
+            findViewById(R.id.sign_out_button).setOnClickListener(this);
 
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setScopes(gso.getScopeArray());
-
+            SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+            signInButton.setSize(SignInButton.SIZE_STANDARD);
+            signInButton.setScopes(gso.getScopeArray());
+        }
         mMessageBus = MessageBus.getInstance();
         mMessageBus.register(this);
 
@@ -122,19 +126,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void handleSignInResult(GoogleSignInResult result){
         mUsername = result.getSignInAccount().getEmail().split("@")[0];
+        mAPIToken = result.getSignInAccount().getServerAuthCode();
+
+        getChatrooms();
+    }
+
+    private void getChatrooms(){
 
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         setContentView(R.layout.fragment_container);
         ChatroomListFragment fragment = new ChatroomListFragment();
         fragment.setmListener(this);
         Bundle b = new Bundle();
-        b.putString(ChatroomListFragment.USER_TOKEN_KEY, result.getSignInAccount().getServerAuthCode());
+        b.putString(ChatroomListFragment.USER_TOKEN_KEY, mAPIToken);
         fragment.setArguments(b);
 
-        ft.add(R.id.container_for_fragments, fragment).commit();
+        ft.add(R.id.container_for_fragments, fragment).addToBackStack("CHATROOMS").commit();
 
     }
-
 
     public void startWS(Integer chatroom_id, String username){
         String raw_WS_URI = "ws://utubeu.herokuapp.com/ws?chatroom-id=%d&user-name=%s";
