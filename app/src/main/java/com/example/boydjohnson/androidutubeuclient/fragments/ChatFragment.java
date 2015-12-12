@@ -127,12 +127,14 @@ public class ChatFragment extends Fragment implements YouTubePlayer.OnInitialize
     public void getStartTheVideo(Start start){
 
         YouTubePlayerSupportFragment youTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
-
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
         if(mCurrentVideo==null){
            //the first time add the fragment to the container
-            FragmentTransaction ft = mFragmentManager.beginTransaction();
             ft.add(R.id.youtube_player_frag_container, youTubePlayerSupportFragment).commit();
 
+        }else{
+            //Any other time replace it
+            ft.replace(R.id.youtube_player_frag_container, youTubePlayerSupportFragment).commit();
         }
 
         mCurrentVideo = start.getYoutube_value();
