@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.adapters.SuggestionListAdapter;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
+import com.example.boydjohnson.androidutubeuclient.data.Start;
 import com.example.boydjohnson.androidutubeuclient.data.SuggestionIn;
 import com.example.boydjohnson.androidutubeuclient.data.SuggestionList;
 import com.squareup.otto.Subscribe;
@@ -69,6 +70,22 @@ public class SuggestionsListFragment extends ListFragment {
             mAdapter = new SuggestionListAdapter(getActivity(), R.layout.fragment_container, mSuggestionInList, mChatroomId);
         }
         mAdapter.add(suggestionIn);
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+    //The code in the method doesn't seem the best but it is what I could think of
+    @Subscribe
+    public void getStartToRemoveSuggestion(Start start){
+        int position=-1;
+        for(int i=0; i<mAdapter.getCount(); i++){
+            if(mAdapter.getItem(i).getYoutube_value().equals(start.getYoutube_value())){
+                position = i;
+                break;
+            }
+        }
+        SuggestionIn suggestionToRemove = mAdapter.getItem(position);
+        mAdapter.remove(suggestionToRemove);
         mAdapter.notifyDataSetChanged();
     }
 
