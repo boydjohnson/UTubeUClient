@@ -196,6 +196,7 @@ public class ChatroomListFragment extends Fragment {
 
             Log.i("CHATROOMNAME:::", chatroom.getname());
             Button button = new Button(getActivity());
+            button.setText(chatroom.getname());
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -64,6 +64,10 @@ public class SuggestionsListFragment extends ListFragment {
 
     @Subscribe
     public void getSuggestionIn(SuggestionIn suggestionIn){
+
+        if(mAdapter==null){
+            mAdapter = new SuggestionListAdapter(getActivity(), R.layout.fragment_container, mSuggestionInList, mChatroomId);
+        }
         mAdapter.add(suggestionIn);
         mAdapter.notifyDataSetChanged();
     }

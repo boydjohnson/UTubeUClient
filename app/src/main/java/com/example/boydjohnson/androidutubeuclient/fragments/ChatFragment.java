@@ -27,11 +27,18 @@ import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
 import com.example.boydjohnson.androidutubeuclient.data.LastTenMessage;
 
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageOut;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
@@ -39,7 +46,7 @@ import java.util.ArrayList;
 /**
  * Created by boydjohnson on 12/1/15.
  */
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment implements YouTubePlayer.OnInitializedListener{
 
     private LinearLayout mChatterTextDock;
     private ScrollView mScroller;
@@ -51,6 +58,8 @@ public class ChatFragment extends Fragment {
     private Integer mChatroomId;
     private String mUsername;
 
+    private String mCurrentVideo;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -61,6 +70,7 @@ public class ChatFragment extends Fragment {
         mChatroomId = bundle.getInt(SuggestionsListFragment.CHATROOM_ID_TAG);
         mUsername = bundle.getString(SuggestionsListFragment.USERNAME_TAG);
         mFragmentManager = getFragmentManager();
+
     }
 
     @Override
@@ -69,7 +79,6 @@ public class ChatFragment extends Fragment {
         mScroller = (ScrollView)view.findViewById(R.id.scroller);
         mChatterTextDock = (LinearLayout)view.findViewById(R.id.chatter_text_dock);
 
-
         EditText textInputBox = (EditText)view.findViewById(R.id.chatter_text_box);
         textInputBox.setImeOptions(EditorInfo.IME_ACTION_DONE);
         textInputBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -77,13 +86,13 @@ public class ChatFragment extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 Log.i("KEYPRESSED", Integer.toString(actionId));
 
-                if(actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     EditText editText = (EditText) v;
-                    if(!editText.getText().toString().equals("")) {
+                    if (!editText.getText().toString().equals("")) {
                         TextMessageOut textMessageOut = new TextMessageOut(mChatroomId, mUsername, editText.getText().toString());
                         editText.setText("");
                         mMessageBus.post(textMessageOut);
-                    }else{
+                    } else {
                         Toast.makeText(getActivity(), "No text entered!", Toast.LENGTH_SHORT).show();
                     }
                     return true;
@@ -116,8 +125,19 @@ public class ChatFragment extends Fragment {
 
     @Subscribe
     public void getStartTheVideo(Start start){
-        FragmentTransaction ft = mFragmentManager.beginTransaction();
-        ft.add(R.id.container_for_fragments,);
+
+        YouTubePlayerSupportFragment youTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
+
+        if(mCurrentVideo==null){
+           //the first time add the fragment to the container
+            FragmentTransaction ft = mFragmentManager.beginTransaction();
+            ft.add(R.id.youtube_player_frag_container, youTubePlayerSupportFragment).commit();
+
+        }
+
+        mCurrentVideo = start.getYoutube_value();
+        youTubePlayerSupportFragment.initialize(getYoutubeAPIkey(), this);
+
 
     }
 
@@ -138,8 +158,36 @@ public class ChatFragment extends Fragment {
 
 
         }
-        mScroller.fullScroll(View.FOCUS_DOWN);
-
     }
+
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored){
+        if(!wasRestored&&mCurrentVideo!=null){
+            player.loadVideo(mCurrentVideo);
+
+        }
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider arg0, YouTubeInitializationResult arg1) {
+    //TODO: figure out what to do here
+        Log.i("YOUTUBE:::", "Failure");
+    }
+
+    private String getYoutubeAPIkey(){
+        String key = null;
+        InputStream keyStream = getResources().openRawResource(R.raw.youtube_api_key);
+        BufferedReader keyStreamReader = new BufferedReader(new InputStreamReader(keyStream));
+        try{
+            key = keyStreamReader.readLine();
+
+
+            return key;
+        } catch (IOException e){
+            Log.e("Error","Error reading youtube_api key from raw resource file", e);
+            return null;
+        }
+    }
+
 
 }
