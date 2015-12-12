@@ -9,6 +9,13 @@ public class YoutubeSearchResult {
     private String thumbnailURL;
     private String id;
 
+    public YoutubeSearchResult(String title, String description, String thumbnailURL, String id) {
+        this.title = title;
+        this.description = description;
+        this.thumbnailURL = thumbnailURL;
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }
@@ -37,7 +44,4 @@ public class YoutubeSearchResult {
         return thumbnailURL;
     }
 
-    public void setThumbnailURL(String thumbnail) {
-        this.thumbnailURL = thumbnail;
-    }
 }

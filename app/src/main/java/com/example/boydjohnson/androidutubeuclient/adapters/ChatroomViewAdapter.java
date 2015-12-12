@@ -45,7 +45,10 @@ public class ChatroomViewAdapter extends FragmentPagerAdapter {
                 suggestionFragment.setArguments(b);
                 return suggestionFragment;
 
-            case 3: return new YoutubeSearchFragment();
+            case 3:
+                YoutubeSearchFragment youtubeFragment= new  YoutubeSearchFragment();
+                youtubeFragment.setArguments(b);
+                return youtubeFragment;
 
             default:
                 ChatFragment cFragment = new ChatFragment();
