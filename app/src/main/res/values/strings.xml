@@ -7,5 +7,6 @@
 
     <string name="chat_text_label">Enter Chat Text:</string>
     <string name="vote_checkbox_text">Vote!</string>
+    <string name="suggest_button_text">Suggest!</string>
     
 </resources>
