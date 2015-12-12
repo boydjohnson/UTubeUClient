@@ -1,5 +1,6 @@
 package com.example.boydjohnson.androidutubeuclient.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -41,6 +42,8 @@ public class YoutubeSearchFragment extends Fragment {
     private YouTube.Search.List query;
     private Integer mChatroomId;
 
+    private ListView listView;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -68,7 +71,7 @@ public class YoutubeSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_youtube, parent, false);
 
-        final ListView listView = (ListView)view.findViewById(R.id.youtube_search_container);
+        listView = (ListView)view.findViewById(R.id.youtube_search_container);
 
         EditText textInputBox = (EditText)view.findViewById(R.id.youtube_search);
 
@@ -84,26 +87,7 @@ public class YoutubeSearchFragment extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     EditText editText = (EditText) v;
                     if (!editText.getText().toString().equals("")) {
-                        query.setQ(editText.getText().toString());
-
-                        try{
-                            ArrayList<YoutubeSearchResult> items = new ArrayList<>();
-                            SearchListResponse response = query.execute();
-                            List<SearchResult> resultList = response.getItems();
-                            for(SearchResult result:resultList){
-                                YoutubeSearchResult item = new YoutubeSearchResult(result.getSnippet().getTitle(),
-                                        result.getSnippet().getDescription(),
-                                        result.getSnippet().getThumbnails().getDefault().getUrl(),
-                                        result.getId().getVideoId());
-                                items.add(item);
-                            }
-                            YoutubeSearchAdapter adapter = new YoutubeSearchAdapter(getActivity(),R.layout.simple_search_list,items, mChatroomId);
-                            listView.setAdapter(adapter);
-
-
-                        }catch (Exception e){
-                            Log.e("YTSearchquery", e.toString());
-                        }
+                       new GetYoutubeResults().execute(editText.getText().toString());
 
                     } else {
                         Toast.makeText(getActivity(), "No text entered!", Toast.LENGTH_SHORT).show();
@@ -117,10 +101,53 @@ public class YoutubeSearchFragment extends Fragment {
         return view;
     }
 
+    private class GetYoutubeResults extends AsyncTask<String,String,SearchListResponse>{
+
+        @Override
+        public SearchListResponse doInBackground(String...args){
+
+            query.setQ(args[0]);
+            SearchListResponse response = null;
+            try{
+                response = query.execute();
+
+            }catch (Exception e){
+                Log.e("GETYOUTUBERESULTS", e.toString());
+            }
+            return response;
+    }
+        @Override
+        public void onPostExecute(SearchListResponse response){
+            List<SearchResult> resultList = response.getItems();
+
+            ArrayList<YoutubeSearchResult> items = new ArrayList<>();
+            for(SearchResult result:resultList){
+                YoutubeSearchResult item = new YoutubeSearchResult(result.getSnippet().getTitle(),
+                        result.getSnippet().getDescription(),
+                        result.getSnippet().getThumbnails().getDefault().getUrl(),
+                        result.getId().getVideoId());
+                items.add(item);
+                Log.i("WHAT?", item.getTitle());
+            }
+
+
+            if(listView.getAdapter()==null) {
+                YoutubeSearchAdapter adapter = new YoutubeSearchAdapter(getActivity(), R.layout.simple_search_list, items, mChatroomId);
+                listView.setAdapter(adapter);
+            }else{
+                YoutubeSearchAdapter adapter = (YoutubeSearchAdapter)listView.getAdapter();
+                adapter.clear();
+                adapter.addAll(items);
+                adapter.notifyDataSetChanged();
+
+            }
+        }
+    }
+
 
     private String getYoutubeAPIkey() {
         String key = null;
-        InputStream keyStream = getResources().openRawResource(R.raw.youtube_api_key);
+        InputStream keyStream = getResources().openRawResource(R.raw.youtube_data_key);
         BufferedReader keyStreamReader = new BufferedReader(new InputStreamReader(keyStream));
         try {
             key = keyStreamReader.readLine();

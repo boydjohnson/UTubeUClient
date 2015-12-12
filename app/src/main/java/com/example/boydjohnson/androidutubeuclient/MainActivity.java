@@ -16,6 +16,7 @@ import com.example.boydjohnson.androidutubeuclient.data.LastTen;
 import com.example.boydjohnson.androidutubeuclient.data.Start;
 import com.example.boydjohnson.androidutubeuclient.data.SuggestionIn;
 import com.example.boydjohnson.androidutubeuclient.data.SuggestionList;
+import com.example.boydjohnson.androidutubeuclient.data.SuggestionOut;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageIn;
 import com.example.boydjohnson.androidutubeuclient.data.TextMessageOut;
 import com.example.boydjohnson.androidutubeuclient.data.UsernamesInChatroom;
@@ -236,6 +237,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mConnection.sendTextMessage(mapper.writeValueAsString(textMessageOut));
         }catch (Exception e){
             Log.e("MESSAGEOUT", e.toString());
+        }
+    }
+
+    @Subscribe
+    public void getSuggestionOut(SuggestionOut suggestionOut){
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+            mConnection.sendTextMessage(mapper.writeValueAsString(suggestionOut));
+        }catch (Exception e){
+            Log.e("SuggestionOUt", e.toString());
         }
     }
 

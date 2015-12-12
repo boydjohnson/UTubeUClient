@@ -47,10 +47,10 @@ public class YoutubeSearchAdapter extends ArrayAdapter<YoutubeSearchResult> {
         if(convertView == null) {
             convertView = mInflater.inflate(R.layout.simple_search_list, parent, false);
         }
-        TextView titleTV = (TextView)convertView.findViewById(R.id.suggestion_title);
+        TextView titleTV = (TextView)convertView.findViewById(R.id.youtube_title);
         titleTV.setText(searchResult.getTitle());
 
-        TextView descTV = (TextView)convertView.findViewById(R.id.suggestion_description);
+        TextView descTV = (TextView)convertView.findViewById(R.id.youtube_description);
         descTV.setText(searchResult.getDescription());
 
         ImageView imageView = (ImageView)convertView.findViewById(R.id.youtube_image);
@@ -71,5 +71,16 @@ public class YoutubeSearchAdapter extends ArrayAdapter<YoutubeSearchResult> {
 
         return convertView;
     }
+
+    @Override
+    public YoutubeSearchResult getItem(int pos){
+        return mSearchResults.get(pos);
+    }
+
+    @Override
+    public int getCount(){
+        return mSearchResults.size();
+    }
+
 
 }
