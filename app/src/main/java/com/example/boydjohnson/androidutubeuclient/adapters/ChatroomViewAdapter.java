@@ -58,6 +58,17 @@ public class ChatroomViewAdapter extends FragmentPagerAdapter {
     }
 
     @Override
+    public CharSequence getPageTitle(int pos){
+        switch(pos){
+            case 0: return "Chatroom";
+            case 1: return "Users";
+            case 2: return "Suggested Videos";
+            case 3: return "Video Search";
+            default: return "Chatroom";
+        }
+    }
+
+    @Override
     public int getCount(){
         return 4;
     }
