@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.boydjohnson.androidutubeuclient.R;
@@ -58,7 +59,27 @@ public class SuggestionListAdapter extends ArrayAdapter<SuggestionIn> {
 
         //This piece of code is forward-thinking. Right now getPercentage is always null on a suggestion.
         if(suggestionIn.getPercentage()==null) {
+            RelativeLayout relativeLayout = (RelativeLayout)convertView.findViewById(R.id.suggestion_container);
+
             votingPercentageTV.setText("0.00");
+
+            Button voter = new Button(mContext);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            voter.setLayoutParams(params);
+            voter.setText("Vote!");
+            voter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Button votingButton = (Button) v;
+                    VoteOut voteOut = new VoteOut(suggestionIn.getYoutube_value(), mChatroom_id, true);
+                    mMessageBus.post(voteOut);
+                }
+            });
+            relativeLayout.addView(voter);
+
         }else{
             votingPercentageTV.setText(Float.toString(suggestionIn.getPercentage()));
         }
@@ -66,15 +87,7 @@ public class SuggestionListAdapter extends ArrayAdapter<SuggestionIn> {
         Picasso.with(mContext).load(suggestionIn.getImage_url()).into(imageView);
 
 
-        Button voter = (Button)convertView.findViewById(R.id.vote_checker);
-        voter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                VoteOut voteOut = new VoteOut(suggestionIn.getYoutube_value(), mChatroom_id, true);
-                mMessageBus.post(voteOut);
-            }
-        });
 
         return convertView;
     }
