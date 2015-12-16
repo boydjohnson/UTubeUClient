@@ -142,6 +142,11 @@ public class ChatFragment extends Fragment implements YouTubePlayer.OnInitialize
 
 
     }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mMessageBus.unregister(this);
+    }
 
     @Subscribe
     public void getLastTenMessages(LastTen lastTenMessages){

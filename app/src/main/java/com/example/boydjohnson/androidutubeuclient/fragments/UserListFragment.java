@@ -35,6 +35,11 @@ public class UserListFragment extends ListFragment {
 
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        MessageBus.getInstance().unregister(this);
+    }
 
     @Subscribe
     public void getUserList(UsernamesInChatroom userlist){

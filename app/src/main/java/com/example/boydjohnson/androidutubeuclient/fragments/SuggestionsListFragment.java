@@ -51,6 +51,12 @@ public class SuggestionsListFragment extends ListFragment {
         this.setEmptyText("No suggestions. Suggest a video!");
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        MessageBus.getInstance().unregister(this);
+    }
+
     @Subscribe
     public void getSuggestionList(SuggestionList suggestionList){
         ArrayList<String> suggestions_to_be_parsed = suggestionList.getThe_list();

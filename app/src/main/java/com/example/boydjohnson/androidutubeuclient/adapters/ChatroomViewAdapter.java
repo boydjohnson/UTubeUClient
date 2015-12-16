@@ -74,8 +74,4 @@ public class ChatroomViewAdapter extends FragmentPagerAdapter {
     }
 
 
-    public interface FragmentLifecycle{
-        void onPauseFragment();
-        void onResumeFragment();
-    }
 }

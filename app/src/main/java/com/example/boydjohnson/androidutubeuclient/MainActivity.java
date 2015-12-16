@@ -1,5 +1,6 @@
 package com.example.boydjohnson.androidutubeuclient;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         b.putString(ChatroomListFragment.USER_TOKEN_KEY, mServerAuthToken);
         fragment.setArguments(b);
 
-        ft.add(R.id.container_for_fragments, fragment).addToBackStack("CHATROOMS").commit();
+        ft.add(R.id.container_for_fragments, fragment, "CHATROOMS").addToBackStack("CHATROOMS").commit();
 
     }
 
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         b.putString(ChatroomListFragment.INTERNAL_API_TOKEN_KEY, mInternalAPIKey);
         fragment.setArguments(b);
 
-        ft.replace(R.id.container_for_fragments, fragment).addToBackStack("CHATROOMS").commit();
+        ft.replace(R.id.container_for_fragments, fragment, "CHATROOMS").addToBackStack("CHATROOMS").commit();
 
     }
 
@@ -236,7 +237,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pager.setOffscreenPageLimit(4);
         ChatroomViewAdapter adapter = new ChatroomViewAdapter(mFragmentManager, chatroom.getid(), mUsername);
         pager.setAdapter(adapter);
-
     }
 
     @Override
@@ -246,12 +246,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed(){
-        if(mFragmentManager.findFragmentByTag("CHATROOMS")!=null&&mConnection.isConnected()){
+        Log.i("BACKPRESSED::", Integer.toString(mFragmentManager.getBackStackEntryCount()));
+
+
+        if(mConnection.isConnected()){
+            //Seems like hacky way to flush out all the fragments
+            for(Fragment f:mFragmentManager.getFragments()){
+                mFragmentManager.beginTransaction().remove(f).commit();
+            }
             mConnection.disconnect();
             getChatroomsOnBackpressed();
 
         }else{
-            this.onBackPressed();
+            super.onBackPressed();
         }
     }
 
