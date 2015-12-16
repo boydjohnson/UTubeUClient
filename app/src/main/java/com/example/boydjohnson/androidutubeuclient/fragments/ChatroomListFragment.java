@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.boydjohnson.androidutubeuclient.MainActivity;
 import com.example.boydjohnson.androidutubeuclient.R;
 import com.example.boydjohnson.androidutubeuclient.bus.MessageBus;
 import com.example.boydjohnson.androidutubeuclient.data.Chatroom;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 public class ChatroomListFragment extends Fragment {
 
     public static final String USER_TOKEN_KEY = "com.example.boydjohnson.androidutubeuclient.fragments.chatroomlistfragment.user_token_key";
-
+    public static final String INTERNAL_API_TOKEN_KEY = "com.example.boydjohnson.chatroomlistfragment.internal_api_token_key";
     private String mUserToken;
 
     private String mAPItoken;
@@ -49,20 +50,28 @@ public class ChatroomListFragment extends Fragment {
     private LinearLayout mOwnedChatroomDock;
 
     private OpenChatroomAndWSListener mListener;
+    private GetBackInternalAPIKey mListener2;
 
     public interface OpenChatroomAndWSListener {
         void openChatroom(Chatroom chatroom);
     }
 
+    public interface GetBackInternalAPIKey{
+        void getInternalApiKey(String apiKey);
+    }
+
     public void setmListener(OpenChatroomAndWSListener listener){
         this.mListener = listener;
     }
+    public void setmListener2(GetBackInternalAPIKey listener){this.mListener2 = listener;}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         mUserToken = bundle.getString(USER_TOKEN_KEY);
+        mAPItoken = bundle.getString(INTERNAL_API_TOKEN_KEY);
+
         MessageBus.getInstance().register(this);
     }
 
@@ -70,8 +79,14 @@ public class ChatroomListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chatroom_list, parent, false);
 
-        new GetAPIToken().execute("http://utubeu.herokuapp.com/api/convert-token/google-oauth2", "GET", mUserToken);
-        new GetChatrooms().execute("ownedchatrooms", mAPItoken);
+        if(mAPItoken==null) {
+            new GetAPIToken().execute("http://utubeu.herokuapp.com/api/convert-token/google-oauth2", "GET", mUserToken);
+
+
+        }else{
+            new GetChatrooms().execute("ownedchatrooms", mAPItoken);
+
+        }
         //Makeownedbuttons method is called in onpostexecute of GetChatrooms
         mOwnedChatroomDock = (LinearLayout) view.findViewById(R.id.chatrooms_dock);
 
@@ -125,7 +140,8 @@ public class ChatroomListFragment extends Fragment {
 
 
                     mAPItoken = jsonObject.getString("access_token");
-
+                    mListener2.getInternalApiKey(mAPItoken);
+                    new GetChatrooms().execute("ownedchatrooms", mAPItoken);
 
                 } catch (Exception e) {
                     Log.e("GETTOKEN__", e.toString());
@@ -200,7 +216,7 @@ public class ChatroomListFragment extends Fragment {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ChatFragment chatFragment = new ChatFragment();
+
                     mListener.openChatroom(chatroom);
 
 

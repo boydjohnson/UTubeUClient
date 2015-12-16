@@ -50,7 +50,10 @@ import de.tavendo.autobahn.WebSocketException;
 https://github.com/googlesamples/google-services/blob/master/android/signin/app/src/main/java/com/google/samples/quickstart/signin/SignInActivity.java
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, ChatroomListFragment.OpenChatroomAndWSListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        GoogleApiClient.OnConnectionFailedListener,
+        ChatroomListFragment.OpenChatroomAndWSListener,
+        ChatroomListFragment.GetBackInternalAPIKey {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -59,7 +62,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentManager mFragmentManager;
 
     private String mUsername;
-    private String mAPIToken;
+    private String mServerAuthToken;
+    private String mInternalAPIKey;
 
     private static Bus mMessageBus;
 
@@ -77,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mFragmentManager = getSupportFragmentManager();
 
-        if(mUsername!=null && mAPIToken!=null){
+        if(mUsername!=null && mServerAuthToken!=null){
             getChatrooms();
         }else {
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void handleSignInResult(GoogleSignInResult result){
         mUsername = result.getSignInAccount().getEmail().split("@")[0];
-        mAPIToken = result.getSignInAccount().getServerAuthCode();
+        mServerAuthToken = result.getSignInAccount().getServerAuthCode();
 
         getChatrooms();
     }
@@ -138,11 +142,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.fragment_container);
         ChatroomListFragment fragment = new ChatroomListFragment();
         fragment.setmListener(this);
+        fragment.setmListener2(this);
         Bundle b = new Bundle();
-        b.putString(ChatroomListFragment.USER_TOKEN_KEY, mAPIToken);
+        b.putString(ChatroomListFragment.USER_TOKEN_KEY, mServerAuthToken);
         fragment.setArguments(b);
 
         ft.add(R.id.container_for_fragments, fragment).addToBackStack("CHATROOMS").commit();
+
+    }
+
+    private void getChatroomsOnBackpressed(){
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        setContentView(R.layout.fragment_container);
+        ChatroomListFragment fragment = new ChatroomListFragment();
+        fragment.setmListener2(this);
+        fragment.setmListener(this);
+        Bundle b = new Bundle();
+        b.putString(ChatroomListFragment.INTERNAL_API_TOKEN_KEY, mInternalAPIKey);
+        fragment.setArguments(b);
+
+        ft.replace(R.id.container_for_fragments, fragment).addToBackStack("CHATROOMS").commit();
 
     }
 
@@ -218,6 +237,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ChatroomViewAdapter adapter = new ChatroomViewAdapter(mFragmentManager, chatroom.getid(), mUsername);
         pager.setAdapter(adapter);
 
+    }
+
+    @Override
+    public void getInternalApiKey(String apiKey){
+        mInternalAPIKey = apiKey;
+    }
+
+    @Override
+    public void onBackPressed(){
+        if(mFragmentManager.findFragmentByTag("CHATROOMS")!=null&&mConnection.isConnected()){
+            mConnection.disconnect();
+            getChatroomsOnBackpressed();
+
+        }else{
+            this.onBackPressed();
+        }
     }
 
     @Subscribe
